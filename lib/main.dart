@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const TaskyApp());
+  runApp(const MyApp());
 }
 
-class TaskyApp extends StatelessWidget {
-  const TaskyApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tasky - Task Management Application',
       debugShowCheckedModeBanner: false,
+      title: 'Saudi Landmarks',
       theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0D5C3A)),
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E3A8A)),
       ),
       home: const LoginPage(),
     );
   }
 }
 
-// ============================================================================
-// 1. LOGIN PAGE (Satisfies all Login requirements)
-// ============================================================================
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -33,20 +30,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+  bool _obscure = true;
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _handleLogin() {
+  void _login() {
     if (_formKey.currentState!.validate()) {
-      // Navigate to Home Page (Satisfies requirement: link another page to login page)
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -54,189 +43,108 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _clearFields() {
-    _usernameController.clear();
-    _passwordController.clear();
-    _formKey.currentState?.reset();
-    setState(() {});
+  @override
+  void dispose() {
+    _userController.dispose();
+    _passController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF0D5C3A);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3A8A),
+        title: const Text('Login Page'),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
         centerTitle: true,
-        title: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.lock_outline, color: Colors.white, size: 20),
-            SizedBox(width: 8),
-            Text(
-              'Tasky Login Portal',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Times New Roman',
-              ),
-            ),
-          ],
-        ),
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+            elevation: 3,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Application Logo & Header
-                    const Icon(
-                      Icons.task_alt,
-                      size: 64,
-                      color: Color(0xFF1E3A8A),
-                    ),
-                    const SizedBox(height: 12),
+                    const Icon(Icons.travel_explore, size: 55, color: primaryColor),
+                    const SizedBox(height: 10),
                     const Text(
-                      'Welcome to Tasky',
-                      textAlign: TextAlign.center,
+                      'Saudi Landmarks',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E3A8A),
+                        color: primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     const Text(
-                      'Official Task Management System',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      'Student: DHAFIR FAHAD ALWALA (443206840)',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     const SizedBox(height: 24),
-
-                    // --- Username Field ---
-                    // Rule 1: Username must not exceed 16 characters
-                    // Rule 2: Application does not expect characters that have small typing [a-z]
                     TextFormField(
-                      controller: _usernameController,
+                      controller: _userController,
                       decoration: const InputDecoration(
                         labelText: 'Username',
-                        hintText: 'e.g. ADMIN_USER, TASK_MGR',
-                        helperText: 'Max 16 chars | No small letters [a-z]',
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Color(0xFF1E3A8A),
-                        ),
+                        prefixIcon: Icon(Icons.person),
                         border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xFF1E3A8A),
-                            width: 2,
-                          ),
-                        ),
+                        helperText: 'Max 16 chars, no small letters [a-z]',
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Username cannot be empty';
+                          return 'Username is required';
                         }
-                        // Rule 1: Username must not exceed 16 characters
                         if (value.length > 16) {
                           return 'Username must not exceed 16 characters';
                         }
-                        // Rule 2: Application does not expect characters that have small typing [a-z]
                         if (RegExp(r'[a-z]').hasMatch(value)) {
-                          return 'Characters that have small typing [a-z] are not allowed';
+                          return 'Small typing [a-z] is not allowed';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16),
-
-                    // --- Password Field ---
                     TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
+                      controller: _passController,
+                      obscureText: _obscure,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        hintText: 'Enter your password',
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: Color(0xFF1E3A8A),
-                        ),
+                        prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
+                          icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                          onPressed: () => setState(() => _obscure = !_obscure),
                         ),
                         border: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xFF1E3A8A),
-                            width: 2,
-                          ),
-                        ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password cannot be empty';
-                        }
-                        return null;
-                      },
+                      validator: (value) =>
+                          (value == null || value.isEmpty) ? 'Password is required' : null,
                     ),
                     const SizedBox(height: 24),
-
-                    // --- Two Different Buttons (Username and password actions) ---
-                    // Button 1: Login (Validates both Username and Password, then navigates)
-                    ElevatedButton.icon(
-                      onPressed: _handleLogin,
-                      icon: const Icon(Icons.login),
-                      label: const Text(
-                        'Login to Application',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E3A8A),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 13),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Button 2: Second different button (Reset / Clear credentials)
-                    OutlinedButton.icon(
-                      onPressed: _clearFields,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text(
-                        'Reset Input Fields',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF1E3A8A),
-                        side: const BorderSide(color: Color(0xFF1E3A8A)),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        onPressed: _login,
+                        icon: const Icon(Icons.login),
+                        label: const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -251,197 +159,204 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// ============================================================================
-// 2. MAIN APPLICATION PAGE (Linked from Login Page)
-// ============================================================================
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final List<String> images = [
+    'assets/images/t1.webp',
+    'assets/images/t2.webp',
+    'assets/images/t3.webp',
+  ];
+
+  final List<String> imageLabels = [
+    '1. Najran Gate Landmark - بوابة نجران',
+    '2. King Abdulaziz Center (Ithra) - مركز إثراء الثقافي',
+    '3. Historic Emarah Palace - قصر الإمارة التاريخي',
+  ];
+
+  int currentIndex = 0;
+
+  void _nextImage() {
+    setState(() {
+      currentIndex = (currentIndex + 1) % images.length;
+    });
+  }
+
+  void _prevImage() {
+    setState(() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF0D5C3A);
+
+    final List<Map<String, String>> landmarks = [
+      {'name': 'Historic Emarah Palace', 'city': 'Najran', 'type': 'Heritage'},
+      {'name': 'King Abdulaziz Center (Ithra)', 'city': 'Dhahran', 'type': 'Cultural'},
+      {'name': 'Najran University Monument', 'city': 'Najran', 'type': 'Educational'},
+      {'name': 'Al-Aan Historic Palace', 'city': 'Najran', 'type': 'Heritage'},
+    ];
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
-      // --- APPBAR REQUIREMENTS ---
-      // 1. Text widget describing application: Font 14.0, Bold, Times New Roman
-      // 2. Background color that suits application: Deep Navy Color(0xFF1E3A8A)
-      // 3. Icon describing application: Icons.task_alt
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E3A8A),
-        iconTheme: const IconThemeData(color: Colors.white),
-        leading: const Icon(Icons.task_alt, color: Colors.white, size: 26),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        leading: const Icon(Icons.travel_explore),
         title: const Text(
-          'DHAFIR FAHAD ALWALA - 443206840',
+          'Saudi Landmarks: Mobile Guide For Cultural Attractions',
           style: TextStyle(
             fontSize: 14.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'Times New Roman',
-            color: Colors.white,
           ),
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Logout',
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
-      // --- BODY REQUIREMENTS ---
-      // 1. At least one colored container shaped to rectangle containing an image
-      // 2. 3 images describing the application
-      // 3. A list of items for the application
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Section 1 Header
-            const Text(
-              'Featured Overview (Colored Rectangular Container):',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E3A8A),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Featured Landmark (معلم مميز):',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '(${currentIndex + 1} / ${images.length})',
+                  style: const TextStyle(fontWeight: FontWeight.w600, color: primaryColor),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
-
-            // --- REQUIREMENT: At least one container ---
-            // * Shaped to rectangle
-            // * Colored shape
-            // * Includes an image inside
             Container(
               width: double.infinity,
-              height: 180,
+              height: 190,
               decoration: BoxDecoration(
-                shape: BoxShape.rectangle, // Explicit rectangle shape
-                color: const Color(0xFFDBEAFE), // Colored shape background
-                borderRadius: BorderRadius.zero, // Exact sharp rectangle
-                border: Border.all(
-                  color: const Color(0xFF1E3A8A), // Colored border
-                  width: 3.0,
-                ),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6,
-                    offset: Offset(0, 3),
-                  ),
-                ],
+                shape: BoxShape.rectangle,
+                color: const Color(0xFFE8F5E9),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: primaryColor, width: 2),
               ),
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                child: Image.asset(
-                  'assets/images/task_planning.png', // Image inside the container
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+                images[currentIndex],
+                fit: BoxFit.contain,
               ),
             ),
-
-            const SizedBox(height: 24),
-
-            // Section 2 Header: 3 Images describing the application
+            const SizedBox(height: 6),
+            Center(
+              child: Text(
+                imageLabels[currentIndex],
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _prevImage,
+                  icon: const Icon(Icons.arrow_back, size: 18),
+                  label: const Text('السابق'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton.icon(
+                  onPressed: _nextImage,
+                  icon: const Icon(Icons.arrow_forward, size: 18),
+                  label: const Text('التالي'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
             const Text(
-              'Application Workflow (3 Descriptive Images):',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E3A8A),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // --- REQUIREMENT: 3 images describing the application ---
-            // Image 1: Task Planning
-            Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 2,
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/task_planning.png',
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6),
-                    child: Text(
-                      'Image 1: Planning Phase & Backlog',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              '3 Images Overview (اضغط لاختيار المعلم):',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-
-            // Image 2: Task In Progress
-            Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 2,
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/task_progress.png',
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6),
-                    child: Text(
-                      'Image 2: Active Task Execution & Tracking',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+            Row(
+              children: List.generate(images.length, (index) {
+                final isSelected = index == currentIndex;
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => currentIndex = index),
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isSelected ? primaryColor : Colors.grey.shade300,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Image.asset(
+                        images[index],
+                        height: 60,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
-                ],
-              ),
+                );
+              }),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Landmarks Directory (قائمة المعالم):',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-
-            // Image 3: Task Completed
-            Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 2,
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/task_completed.png',
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6),
-                    child: Text(
-                      'Image 3: Finished Milestones & Delivery',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: landmarks.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 6),
+              itemBuilder: (context, index) {
+                final item = landmarks[index];
+                return Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  child: ListTile(
+                    dense: true,
+                    leading: const CircleAvatar(
+                      radius: 14,
+                      backgroundColor: primaryColor,
+                      child: Icon(Icons.location_on, size: 16, color: Colors.white),
+                    ),
+                    title: Text(
+                      item['name']!,
+                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                    ),
+                    subtitle: Text('City: ${item['city']}'),
+                    trailing: Chip(
+                      label: Text(
+                        item['type']!,
+                        style: const TextStyle(fontSize: 11),
                       ),
+                      visualDensity: VisualDensity.compact,
+                      backgroundColor: const Color(0xFFE8F5E9),
+                      side: const BorderSide(color: primaryColor),
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),
